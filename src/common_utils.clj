@@ -52,3 +52,9 @@
     (assoc row
            ; :DATE (parse-date (:DATE row))
            :SP500 (parse-price (:SP500 row)))))
+
+(defn assert=
+  [actual expected]
+  (assert
+    (= actual expected)
+    (str "Actual: " actual "\n\nExpected: " expected)))
