@@ -10,10 +10,8 @@
 ; ## Get Data
 ; Taken from Google Takeout's YouTube activity export.
 
-(def raw-hiccup
-   (as-hiccup (parse (slurp
-                       ; "notebooks/youtube-activity.html"
-                       "notebooks/youtube-activity-sample.html"))))
+#_(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity.html"))))
+(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity-sample.html"))))
 (def entries
   (->> raw-hiccup
    last   ; html
@@ -38,6 +36,7 @@
      :channel-link (:href (nth video 1))
      :datetime datetime}))
      
+; Example for one entry:
 ^{:nextjournal.clerk/visibility :fold}
 (def example
  [:div
@@ -81,5 +80,15 @@
 
 ; ## Run it!
 
-(for [entry entries]
-  (:video (parse-entry entry)))
+; All data:
+
+(def parsed-entries
+  (map parse-entry entries))
+#_(for [entry entries]
+    (:video (parse-entry entry)))
+
+#_(group-by :channel parsed-entries)
+
+; Channels by videos watched:
+
+(reverse (sort-by val (frequencies (map :channel parsed-entries))))
