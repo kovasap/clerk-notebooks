@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility :hide-ns}
-(ns ^:nextjournal.clerk/no-cache youtube
+(ns youtube
   (:require [common-utils :refer [assert=]]
             [nextjournal.clerk :as clerk]
-            [clojure.string :refer [split]]
+            [clojure.string :refer [replace split]]
             [hickory.core :refer [parse as-hiccup]]
             [hiccup.core :refer [html]]))
 
@@ -11,8 +11,8 @@
 ; ## Get Data
 ; Taken from Google Takeout's YouTube activity export.
 
-(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity.html"))))
-#_(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity-sample.html"))))
+#_(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity.html"))))
+(def raw-hiccup (as-hiccup (parse (slurp "notebooks/youtube-activity-sample.html"))))
 (def entries
   (->> raw-hiccup
    last   ; html
@@ -52,8 +52,7 @@
      :channel (last channel)
      :channel-link (:href (nth video 1))
      :datetime datetime
-     :count 1
-     :month (first (split datetime #","))}))
+     :count 1}))
      
 ; Example for one entry:
 ^{:nextjournal.clerk/visibility :fold}
@@ -90,38 +89,40 @@
      " This activity was saved to your Google Account because the following settings were on: YouTube watch history. You can control these settings  "
      [:a {:href "https://myaccount.google.com/activitycontrols"} "here"]
      "."]]])
-#_(def example-no-channel
-    [:div
-     {:class "outer-cell mdl-cell mdl-cell--12-col mdl-shadow--2dp"}
-     [:div
-      {:class "mdl-grid"}
-      [:div {:class "header-cell mdl-cell mdl-cell--12-col"}
-       [:p {:class "mdl-typography--title"} "YouTube" [:br {}]]]
-      [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1"}
-       "Watched "
-       [:a {:href "https://www.youtube.com/watch?v=BQ2RiTx4hsw"} "The Umbrella Academy Season 3 | Trailer"]
-       [:br {}]
-       "Jun 23, 2022, 4:57:47 PM PDT"]
-      [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1 mdl-typography--text-right"}]
-      [:div {:class "content-cell mdl-cell mdl-cell--12-col mdl-typography--caption"}
-       [:b {} "Products:"]
-       [:br {}]
-       " YouTube"
-       [:br {}]
-       [:b {} "Details:"]
-       [:br {}]
-       " From Google Ads"
-       [:br {}]
-       [:b {} "Why is this here?"]
-       [:br {}]
-       " This activity was saved to your Google Account because the following settings were on: YouTube watch history. You can control these settings  "
-       [:a {:href "https://myaccount.google.com/activitycontrols"} "here"]
-       "."]]])
-#_(def example-removed
-    [:div {:class "outer-cell mdl-cell mdl-cell--12-col mdl-shadow--2dp"}
-     [:div {:class "mdl-grid"} [:div {:class "header-cell mdl-cell mdl-cell--12-col"} [:p {:class "mdl-typography--title"} "YouTube" [:br {}]]]
-      [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1"}
-       "Watched a video that has been removed" [:br {}] "Apr 26, 2022, 5:53:11 PM PDT"] [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1 mdl-typography--text-right"}] [:div {:class "content-cell mdl-cell mdl-cell--12-col mdl-typography--caption"} [:b {} "Products:"] [:br {}] " YouTube" [:br {}] [:b {} "Why is this here?"] [:br {}] " This activity was saved to your Google Account because the following settings were on: YouTube watch history. You can control these settings  " [:a {:href "https://myaccount.google.com/activitycontrols"} "here"] "."]]])
+^{:nextjournal.clerk/visibility :fold}
+(def example-no-channel
+  [:div
+   {:class "outer-cell mdl-cell mdl-cell--12-col mdl-shadow--2dp"}
+   [:div
+    {:class "mdl-grid"}
+    [:div {:class "header-cell mdl-cell mdl-cell--12-col"}
+     [:p {:class "mdl-typography--title"} "YouTube" [:br {}]]]
+    [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1"}
+     "Watched "
+     [:a {:href "https://www.youtube.com/watch?v=BQ2RiTx4hsw"} "The Umbrella Academy Season 3 | Trailer"]
+     [:br {}]
+     "Jun 23, 2022, 4:57:47 PM PDT"]
+    [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1 mdl-typography--text-right"}]
+    [:div {:class "content-cell mdl-cell mdl-cell--12-col mdl-typography--caption"}
+     [:b {} "Products:"]
+     [:br {}]
+     " YouTube"
+     [:br {}]
+     [:b {} "Details:"]
+     [:br {}]
+     " From Google Ads"
+     [:br {}]
+     [:b {} "Why is this here?"]
+     [:br {}]
+     " This activity was saved to your Google Account because the following settings were on: YouTube watch history. You can control these settings  "
+     [:a {:href "https://myaccount.google.com/activitycontrols"} "here"]
+     "."]]])
+^{:nextjournal.clerk/visibility :fold}
+(def example-removed
+  [:div {:class "outer-cell mdl-cell mdl-cell--12-col mdl-shadow--2dp"}
+   [:div {:class "mdl-grid"} [:div {:class "header-cell mdl-cell mdl-cell--12-col"} [:p {:class "mdl-typography--title"} "YouTube" [:br {}]]]
+    [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1"}
+     "Watched a video that has been removed" [:br {}] "Apr 26, 2022, 5:53:11 PM PDT"] [:div {:class "content-cell mdl-cell mdl-cell--6-col mdl-typography--body-1 mdl-typography--text-right"}] [:div {:class "content-cell mdl-cell mdl-cell--12-col mdl-typography--caption"} [:b {} "Products:"] [:br {}] " YouTube" [:br {}] [:b {} "Why is this here?"] [:br {}] " This activity was saved to your Google Account because the following settings were on: YouTube watch history. You can control these settings  " [:a {:href "https://myaccount.google.com/activitycontrols"} "here"] "."]]])
 (def parsed-example
   (parse-entry example))
 
@@ -129,32 +130,29 @@
 ; ## Run it!
 
 ; All data:
-
 (def parsed-entries
   (filter
     #(and
-       ()
+       (not (= "Music Library Uploads" (:channel %)))
+       (not (= \e (:channel %)))  ; remove ads
        (not (= \m (:channel %))))  ; remove ads
     (map parse-entry entries)))
-#_(for [entry entries]
-    (:video (parse-entry entry)))
 (count parsed-entries)
 
 #_(group-by :channel parsed-entries)
 
 ; Channels by videos watched:
-
 (reverse (sort-by val (frequencies (map :channel parsed-entries))))
 
 
-; Videos watched by month:
-
-(clerk/vl 
-  {:width 3000 :height 400 
+; Videos watched by month.  Note that these are the videos clicked on, NOT the
+; time spent watching said videos. colors represent channels.
+(clerk/vl {::clerk/width :full}
+  {:width 1700 :height 800 
    :data {:name "data"
           :values parsed-entries}
-   :mark "bar"
-   :encoding {:x {:field "month"}
+   :mark {:type "bar" :tooltip true}
+   :encoding {:x {:field "datetime" :timeUnit "monthyear"}
               :y {:aggregate "sum" :field "count"}
-              :color {:field "channel"}}})
+              :color {:field "channel" :legend nil}}})
                

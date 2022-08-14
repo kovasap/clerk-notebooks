@@ -19,3 +19,5 @@ Go to http://localhost:7777/
 ### YouTube Watch History
 
 https://htmlpreview.github.io/?https://github.com/kovasap/clerk-notebooks/blob/main/notebooks/youtube-output.html
+
+![All Watch History Plot](notebooks/youtube-plot.png?raw=true "Watch History")
